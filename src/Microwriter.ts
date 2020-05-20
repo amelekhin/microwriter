@@ -5,11 +5,11 @@ interface MicrowriterOptions {
   /** An array of strings to type */
   lines: string[];
 
-  /** A delay in milliseconds between typing new characters */
-  writeDelay: number;
+  /** A speed in milliseconds between typing new characters */
+  writeSpeed: number;
 
-  /** A delay in milliseconds between deletion of already typed characters */
-  deleteDelay: number;
+  /** A speed in milliseconds between deletion of already typed characters */
+  deleteSpeed: number;
 }
 
 export default class Microwriter {
@@ -20,10 +20,10 @@ export default class Microwriter {
   private _lines: string[];
 
   /** A delay in milliseconds between typing new characters */
-  private _writeDelay: number;
+  private _writeSpeed: number;
 
   /** A delay in milliseconds between deletion of already typed characters */
-  private _deleteDelay: number;
+  private _deleteSpeed: number;
 
   /** Is microwriter writing new characters */
   private _isPaused = false;
@@ -43,8 +43,8 @@ export default class Microwriter {
   constructor(options: MicrowriterOptions) {
     this._target = options.target;
     this._lines = options.lines;
-    this._writeDelay = options.writeDelay;
-    this._deleteDelay = options.deleteDelay;
+    this._writeSpeed = options.writeSpeed;
+    this._deleteSpeed = options.deleteSpeed;
   }
 
   /** Enable or disable timer */
@@ -75,7 +75,7 @@ export default class Microwriter {
 
   /** Start timer */
   private startTimer(): void {
-    this._timerId = window.setTimeout(this.tick, this._isDeleting ? this._deleteDelay : this._writeDelay);
+    this._timerId = window.setTimeout(this.tick, this._isDeleting ? this._deleteSpeed : this._writeSpeed);
   }
 
   /** Stop timer */
