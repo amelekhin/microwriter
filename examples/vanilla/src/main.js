@@ -5,10 +5,11 @@ const target = document.getElementById('microwriter-target');
 const writer = new Microwriter({
   target,
   lines: ['Hello', 'World'],
-  writeDelay: 200,
-  deleteDelay: 50,
+  writeSpeed: 200,
+  deleteSpeed: 50,
+  writeLineDelay: 1000,
+  deleteLineDelay: 1000,
 });
 
-writer.toggle(true);
-
+writer.start();
 console.log(writer);

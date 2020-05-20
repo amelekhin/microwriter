@@ -10,6 +10,12 @@ interface MicrowriterOptions {
 
   /** A speed in milliseconds between deletion of already typed characters */
   deleteSpeed: number;
+
+  /** A delay between before typing the line */
+  writeLineDelay: number;
+
+  /** A delay between before deleting the line */
+  deleteLineDelay: number;
 }
 
 export default class Microwriter {
@@ -24,6 +30,12 @@ export default class Microwriter {
 
   /** A delay in milliseconds between deletion of already typed characters */
   private _deleteSpeed: number;
+
+  /** A delay between before typing the line */
+  private _writeLineDelay: number;
+
+  /** A delay between before deleting the line */
+  private _deleteLineDelay: number;
 
   /** Is microwriter writing new characters */
   private _isPaused = false;
@@ -43,8 +55,10 @@ export default class Microwriter {
   constructor(options: MicrowriterOptions) {
     this._target = options.target;
     this._lines = options.lines;
-    this._writeSpeed = options.writeSpeed;
-    this._deleteSpeed = options.deleteSpeed;
+    this._writeSpeed = options.writeSpeed || 0;
+    this._deleteSpeed = options.deleteSpeed || 0;
+    this._writeLineDelay = options.writeLineDelay || 0;
+    this._deleteLineDelay = options.deleteLineDelay || 0;
   }
 
   /** Enable or disable timer */
@@ -75,12 +89,30 @@ export default class Microwriter {
 
   /** Start timer */
   private startTimer(): void {
-    this._timerId = window.setTimeout(this.tick, this._isDeleting ? this._deleteSpeed : this._writeSpeed);
+    this._timerId = window.setTimeout(this.tick, this.getDelay());
   }
 
   /** Stop timer */
   private stopTimer(): void {
     window.clearTimeout(this._timerId);
+  }
+
+  private getDelay(): number {
+    const currentLine = this._lines[this._lineIndex];
+
+    if (this._charIndex === 0) {
+      return this._writeLineDelay || this._writeSpeed;
+    }
+
+    if (this._charIndex === currentLine.length) {
+      return this._writeLineDelay || this._writeSpeed;
+    }
+
+    if (this._isDeleting) {
+      return this._deleteSpeed;
+    }
+
+    return this._writeSpeed;
   }
 
   private reset(): void {
