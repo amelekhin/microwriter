@@ -1,0 +1,24 @@
+{
+  "name": "microwriter",
+  "version": "0.0.1",
+  "description": "A typewriter library for JavaScript and TypeScript",
+  "license": "MIT",
+  "main": "dist/microwriter.cjs.js",
+  "module": "dist/microwriter.esm.js",
+  "browser": "dist/microwriter.umd.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
+    "@rollup/plugin-typescript": "^4.1.1",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "eslint": "^7.0.0",
+    "rollup": "^2.6.1",
+    "tslib": "^1.11.1",
+    "typescript": "^3.8.3"
+  }
+}
