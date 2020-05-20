@@ -26,7 +26,7 @@ export default class Microwriter {
   private _deleteDelay: number;
 
   /** Is microwriter writing new characters */
-  private _isEnabled = false;
+  private _isPaused = false;
 
   /** Is microwriter deleting already typed characters */
   private _isDeleting = false;
@@ -48,14 +48,24 @@ export default class Microwriter {
   }
 
   /** Enable or disable timer */
-  public toggle(isTyping?: boolean): void {
-    this._isEnabled = typeof isTyping === 'boolean' ? isTyping : !this._isEnabled;
+  public toggle(isPaused?: boolean): void {
+    this._isPaused = typeof isPaused === 'boolean' ? isPaused : !this._isPaused;
 
-    if (isTyping) {
-      this.startTimer();
-    } else {
+    if (isPaused) {
       this.stopTimer();
+    } else {
+      this.startTimer();
     }
+  }
+
+  public start(): void {
+    this._isPaused = false;
+    this.startTimer();
+  }
+
+  public pause(): void {
+    this._isPaused = true;
+    this.stopTimer();
   }
 
   public replaceLines(nextLines: string[]): void {
@@ -94,7 +104,7 @@ export default class Microwriter {
 
   /** Performa tick */
   private tick = (): void => {
-    if (!this._isEnabled) {
+    if (this._isPaused) {
       return;
     }
 
@@ -117,7 +127,7 @@ export default class Microwriter {
 
     this._target.innerHTML = nextInnerHtml;
 
-    if (this._isEnabled) {
+    if (!this._isPaused) {
       this.startTimer();
     }
   };
