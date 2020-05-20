@@ -52,20 +52,35 @@ export default class Microwriter {
     this._isEnabled = typeof isTyping === 'boolean' ? isTyping : !this._isEnabled;
 
     if (isTyping) {
-      this.run();
+      this.startTimer();
     } else {
-      this.stop();
+      this.stopTimer();
     }
   }
 
-  /** Run timer */
-  private run(): void {
+  public replaceLines(nextLines: string[]): void {
+    this._lines = nextLines;
+    this.reset();
+  }
+
+  /** Start timer */
+  private startTimer(): void {
     this._timerId = window.setTimeout(this.tick, this._isDeleting ? this._deleteDelay : this._writeDelay);
   }
 
   /** Stop timer */
-  private stop(): void {
+  private stopTimer(): void {
     window.clearTimeout(this._timerId);
+  }
+
+  private reset(): void {
+    this.stopTimer();
+
+    this._isDeleting = false;
+    this._lineIndex = 0;
+    this._charIndex = 0;
+
+    this.startTimer();
   }
 
   private changeLine(): void {
@@ -103,7 +118,7 @@ export default class Microwriter {
     this._target.innerHTML = nextInnerHtml;
 
     if (this._isEnabled) {
-      this.run();
+      this.startTimer();
     }
   };
 }
