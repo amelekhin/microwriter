@@ -14,7 +14,7 @@ A tiny library that simulates the typewriter animation for JavaScript and TypeSc
 - Use [pika.dev][pikadev-url] to import the module without bundling:
 
 ```javascript
-import Microwriter from 'https://cdn.pika.dev/microwriter@^0.5.0';
+import microwriter from 'https://cdn.pika.dev/microwriter@^0.5.0';
 
 const writer = new Microwriter({ ... });
 ```
@@ -34,7 +34,7 @@ A working example can be found in the `example/` directory. The usage is very st
 const target = document.getElementById('microwriter-target');
 
 // Initialize a writer.
-const writer = new Microwriter({
+const writer = microwriter({
   // The target.
   target,
 
