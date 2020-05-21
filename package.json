@@ -1,6 +1,6 @@
 {
   "name": "microwriter",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "A typewriter library for JavaScript and TypeScript",
   "license": "MIT",
   "main": "dist/microwriter.cjs.js",
