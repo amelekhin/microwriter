@@ -2,17 +2,17 @@
 
 A tiny JavaScript / TypeScript library which simulates the typewriter animation.
 
-# Example
+## Example
 
 A working example can be found in the example directory. The usage is very straightforward:
 
 ```javascript
-// Find a target element to write text into
+// Find a target element to write text into.
 const target = document.getElementById('microwriter-target');
 
-// Initialize a writer
+// Initialize a writer.
 const writer = new Microwriter({
-  // The target
+  // The target.
   target,
 
   // The lines list.
@@ -26,23 +26,23 @@ const writer = new Microwriter({
   // If not provided, writeSpeed used instead.
   deleteSpeed: 50,
 
-  // A delay in milliseconds before writing a new line
+  // A delay in milliseconds before writing a new line.
   writeLineDelay: 400,
 
-  // A delay in milliseconds before deletion a written line
+  // A delay in milliseconds before deletion a written line.
   deleteLineDelay: 1000,
 });
 
-// Start writing
+// Start writing.
 writer.start();
 
-// Pause writing
+// Pause writing.
 writer.pause();
 
-// Replace lines and restart
+// Replace lines and restart.
 writer.replaceLines(['My next list', 'of lines.']);
 ```
 
-# License
+## License
 
-MIT
+MIT.
