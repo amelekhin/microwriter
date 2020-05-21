@@ -1,3 +1,3 @@
-import Microwriter from './Microwriter';
+import microwriter from './microwriter';
 
-export default Microwriter;
+export default microwriter;

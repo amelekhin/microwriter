@@ -1,10 +1,10 @@
-import Microwriter from '../../dist/microwriter';
+import microwriter from '../../dist/microwriter';
 
 // Find a target element to write text into
 const target = document.getElementById('microwriter-target');
 
 // Initialize a writer
-const writer = new Microwriter({
+const writer = microwriter({
   // The target
   target,
 
@@ -33,4 +33,4 @@ writer.start();
 // writer.pause();
 
 // Replace lines and restart
-// writer.replaceLines(['My next list', 'of lines.']);
+writer.replaceLines(['My next list', 'of lines.']);
