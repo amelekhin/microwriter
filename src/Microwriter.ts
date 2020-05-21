@@ -18,6 +18,8 @@ interface MicrowriterOptions {
   deleteLineDelay: number;
 }
 
+const DEFAULT_WRITE_SPEED = 200;
+
 export default class Microwriter {
   /** An HTML element to write into */
   private _target: HTMLElement;
@@ -43,117 +45,137 @@ export default class Microwriter {
   /** Is microwriter deleting already typed characters */
   private _isDeleting = false;
 
-  /** Current character index of a current line */
-  private _charIndex = 0;
+  /** The length of a currently written line */
+  private _charsWrittenCount = 0;
 
-  /** Current line index */
-  private _lineIndex = 0;
+  /** The length of a currently written line */
+  private _lineLength = 0;
 
   /** Current timer ID */
   private _timerId = -1;
 
-  constructor(options: MicrowriterOptions) {
+  public constructor(options: MicrowriterOptions) {
     this._target = options.target;
-    this._lines = options.lines;
-    this._writeSpeed = options.writeSpeed || 0;
-    this._deleteSpeed = options.deleteSpeed || 0;
+    this._lines = options.lines || [];
+    this._writeSpeed = options.writeSpeed || DEFAULT_WRITE_SPEED;
+    this._deleteSpeed = options.deleteSpeed || options.writeSpeed || DEFAULT_WRITE_SPEED;
     this._writeLineDelay = options.writeLineDelay || 0;
     this._deleteLineDelay = options.deleteLineDelay || 0;
   }
 
-  /** Enable or disable timer */
-  public toggle(isPaused?: boolean): void {
-    this._isPaused = typeof isPaused === 'boolean' ? isPaused : !this._isPaused;
-
-    if (isPaused) {
-      this.stopTimer();
-    } else {
-      this.startTimer();
-    }
-  }
-
+  /**
+   * Start writing lines.
+   */
   public start(): void {
     this._isPaused = false;
     this.startTimer();
   }
 
+  /**
+   * Pause writing lines.
+   */
   public pause(): void {
     this._isPaused = true;
     this.stopTimer();
   }
 
-  public replaceLines(nextLines: string[]): void {
-    this._lines = nextLines;
+  /**
+   * Replace lines array and restart the timer.
+   *
+   * @param lines - a new list of lines
+   */
+  public replaceLines(lines: string[]): void {
+    this._lines = lines;
     this.reset();
   }
 
-  /** Start timer */
+  /**
+   * Start timer.
+   */
   private startTimer(): void {
     this._timerId = window.setTimeout(this.tick, this.getDelay());
   }
 
-  /** Stop timer */
+  /**
+   * Stop timer.
+   */
   private stopTimer(): void {
     window.clearTimeout(this._timerId);
   }
 
+  /**
+   * Get a delay in ms depending on the current microwriter state.
+   */
   private getDelay(): number {
-    const currentLine = this._lines[this._lineIndex];
+    const currentLine = this._lines[this._lineLength];
 
-    if (this._charIndex === 0) {
+    // If writing a line is about to begin
+    if (this._charsWrittenCount === 0) {
       return this._writeLineDelay || this._writeSpeed;
     }
 
-    if (this._charIndex === currentLine.length) {
-      return this._writeLineDelay || this._writeSpeed;
+    // If deleting a line is about to begin
+    if (this._charsWrittenCount === currentLine.length) {
+      return this._deleteLineDelay || this._deleteSpeed;
     }
 
+    // If in the middle of deleting a line
     if (this._isDeleting) {
       return this._deleteSpeed;
     }
 
+    // If in the middle of writing a line
     return this._writeSpeed;
   }
 
+  /**
+   * Reset microwriter state and restart the timer.
+   */
   private reset(): void {
     this.stopTimer();
 
     this._isDeleting = false;
-    this._lineIndex = 0;
-    this._charIndex = 0;
+    this._lineLength = 0;
+    this._charsWrittenCount = 0;
 
     this.startTimer();
   }
 
-  private changeLine(): void {
-    if (this._lineIndex === this._lines.length - 1) {
-      this._lineIndex = 0;
+  /**
+   * Switch to the next line in the lines list.
+   */
+  private switchToNextLine(): void {
+    if (this._lineLength === this._lines.length - 1) {
+      this._lineLength = 0;
       return;
     }
 
-    this._lineIndex++;
+    this._lineLength++;
   }
 
-  /** Performa tick */
+  /**
+   * Perform writing or deleting a character.
+   */
   private tick = (): void => {
     if (this._isPaused) {
       return;
     }
 
-    const currentLine = this._lines[this._lineIndex];
+    const currentLine = this._lines[this._lineLength];
+    const currentLineLen = currentLine.length;
 
-    if (this._charIndex < currentLine.length + 1 && !this._isDeleting) {
-      this._charIndex += 1;
-    } else if (this._charIndex > -1 && this._isDeleting) {
-      this._charIndex -= 1;
+    if (this._charsWrittenCount < currentLineLen && !this._isDeleting) {
+      this._charsWrittenCount += 1;
+    } else if (this._charsWrittenCount > 0 && this._isDeleting) {
+      this._charsWrittenCount -= 1;
     }
 
-    const nextInnerHtml = currentLine.substr(0, this._charIndex);
+    const nextInnerHtml = currentLine.substr(0, this._charsWrittenCount);
 
-    if (this._charIndex === 0 && this._isDeleting) {
+    if (this._charsWrittenCount === 0 && this._isDeleting) {
       this._isDeleting = false;
-      this.changeLine();
-    } else if (this._charIndex === currentLine.length && !this._isDeleting) {
+      this.switchToNextLine();
+    } else if (this._charsWrittenCount === currentLine.length && !this._isDeleting) {
       this._isDeleting = true;
     }
 
