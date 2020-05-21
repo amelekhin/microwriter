@@ -16,4 +16,8 @@ module.exports = {
     amd: true,
     node: true,
   },
+
+  rules: {
+    '@typescript-eslint/no-use-before-define': ['error', { functions: false }],
+  },
 };

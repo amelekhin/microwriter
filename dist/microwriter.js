@@ -4,7 +4,6 @@
     (global = global || self, global.microwriter = factory());
 }(this, (function () { 'use strict';
 
-    /* eslint-disable @typescript-eslint/no-use-before-define */
     const DEFAULT_WRITE_SPEED = 200;
     function microwriter(options) {
         /** An HTML element to write into */
@@ -31,34 +30,46 @@
         let lineIndex = 0;
         /** Current timer ID */
         let timerId = -1;
+        /**
+         * Start timer.
+         * Exposed as instance method.
+         */
         function startTimer() {
             isPaused = false;
             timerId = window.setTimeout(tick, getDelay());
         }
+        /**
+         * Stop timer.
+         * Exposed as instance method.
+         */
         function stopTimer() {
             window.clearTimeout(timerId);
             isPaused = true;
             timerId = -1;
         }
-        function onLineEnd() {
-            if (lineIndex === lines.length - 1 && !loop) {
-                stopTimer();
-                return;
-            }
-            switchToNextLine();
-        }
-        function switchToNextLine() {
-            if (lineIndex === lines.length - 1) {
-                lineIndex = 0;
-                return;
-            }
-            lineIndex++;
-        }
+        /**
+         * Replace lines and restart timer.
+         * Exposed as instance method.
+         *
+         * @param nextLines - a new list of lines to write
+         */
         function replaceLines(nextLines) {
             lines = nextLines;
             reset();
             startTimer();
         }
+        /**
+         * Stop timer and reset state to initial.
+         */
+        function reset() {
+            stopTimer();
+            isDeleting = false;
+            lineIndex = 0;
+            charsWrittenCount = 0;
+        }
+        /**
+         * Perform writing or deleting a character.
+         */
         function tick() {
             if (isPaused) {
                 return;
@@ -72,6 +83,7 @@
                 charsWrittenCount -= 1;
             }
             const nextInnerHtml = currentLine.substr(0, charsWrittenCount);
+            target.innerHTML = nextInnerHtml;
             if (charsWrittenCount === 0 && isDeleting) {
                 isDeleting = false;
                 onLineEnd();
@@ -79,17 +91,34 @@
             else if (charsWrittenCount === currentLine.length && !isDeleting) {
                 isDeleting = true;
             }
-            target.innerHTML = nextInnerHtml;
             if (!isPaused) {
                 startTimer();
             }
         }
-        function reset() {
-            stopTimer();
-            isDeleting = false;
-            lineIndex = 0;
-            charsWrittenCount = 0;
+        /**
+         * Check if line should be switched or timer should be stopped
+         */
+        function onLineEnd() {
+            if (lineIndex === lines.length - 1 && !loop) {
+                stopTimer();
+                return;
+            }
+            switchToNextLine();
         }
+        /**
+         * Switch to the next line in the lines list.
+         * If the current line is the last one, jump to the first.
+         */
+        function switchToNextLine() {
+            if (lineIndex === lines.length - 1) {
+                lineIndex = 0;
+                return;
+            }
+            lineIndex++;
+        }
+        /**
+         * Get delay for timer depending on the current state.
+         */
         function getDelay() {
             const currentLine = lines[lineIndex];
             // If writing a line is about to begin
@@ -107,6 +136,7 @@
             // If in the middle of writing a line
             return writeSpeed;
         }
+        // Return a microwriter instance
         return {
             start: startTimer,
             pause: stopTimer,
