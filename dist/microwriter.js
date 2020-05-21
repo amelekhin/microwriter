@@ -11,9 +11,9 @@
             this._isPaused = false;
             /** Is microwriter deleting already typed characters */
             this._isDeleting = false;
-            /** The length of a currently written linez */
+            /** The length of a currently written line */
             this._charsWrittenCount = 0;
-            /** The length of a currently written linez */
+            /** The length of a currently written line */
             this._lineLength = 0;
             /** Current timer ID */
             this._timerId = -1;
@@ -98,7 +98,7 @@
             }
             // If deleting a line is about to begin
             if (this._charsWrittenCount === currentLine.length) {
-                return this._writeLineDelay || this._writeSpeed;
+                return this._deleteLineDelay || this._deleteSpeed;
             }
             // If in the middle of deleting a line
             if (this._isDeleting) {
@@ -132,4 +132,4 @@
     return Microwriter;
 
 })));
-//# sourceMappingURL=microwriter.umd.js.map
+//# sourceMappingURL=microwriter.js.map

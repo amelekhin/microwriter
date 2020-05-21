@@ -1,4 +1,4 @@
-import Microwriter from '../../../dist/microwriter.umd';
+import Microwriter from '../../../dist/microwriter';
 
 const target = document.getElementById('microwriter-target');
 
