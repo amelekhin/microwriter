@@ -1,13 +1,13 @@
-import Microwriter from '../../../dist/microwriter';
+import Microwriter from '../../dist/microwriter';
 
 const target = document.getElementById('microwriter-target');
 
 const writer = new Microwriter({
   target,
-  lines: ['Hello', 'World'],
-  writeSpeed: 800,
+  lines: ['Hello, world', 'This is Microwriter'],
+  writeSpeed: 150,
   deleteSpeed: 50,
-  writeLineDelay: 1000,
+  writeLineDelay: 400,
   deleteLineDelay: 1000,
 });
 

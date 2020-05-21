@@ -3,18 +3,25 @@
   <head lang="en">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>microwriter-vanilla</title>
+    <title>Microwriter example</title>
 
     <style>
+      html,
       body {
-        font-family: 'Helvetica Neue', Arial, sans-serif;
+        width: 100%;
+        height: 100%;
+        margin: 0;
         color: #333;
-        font-weight: 300;
+        display: flex;
+      }
+
+      #microwriter-target {
+        font: 2em 'Courier New', Courier, monospace;
+        margin: auto;
       }
     </style>
   </head>
   <body>
-    <h1>microwriter-vanilla</h1>
     <div id="microwriter-target"></div>
     <script src="bundle.js"></script>
   </body>

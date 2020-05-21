@@ -1,5 +1,5 @@
 {
-  "name": "microwriter-example-vanilla",
+  "name": "microwriter-example",
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
