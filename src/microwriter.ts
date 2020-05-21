@@ -22,8 +22,13 @@ interface MicrowriterOptions {
 }
 
 interface MicrowriterInstance {
+  /** Start timer */
   start(): void;
+
+  /** Stop timer */
   pause(): void;
+
+  /** Replace lines and restart timer */
   replaceLines(lines: string[]): void;
 }
 
