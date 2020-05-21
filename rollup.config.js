@@ -2,6 +2,7 @@ import pkg from './package.json';
 import rollupTypescript from '@rollup/plugin-typescript';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import dts from 'rollup-plugin-dts';
 
 export default [
   // Browser-friendly UMD build
@@ -33,5 +34,17 @@ export default [
     ],
 
     plugins: [rollupTypescript()],
+  },
+
+  // TypeScript declaration file
+  {
+    input: 'src/index.ts',
+
+    output: {
+      name: 'microwriter',
+      file: pkg.types,
+    },
+
+    plugins: [dts()],
   },
 ];

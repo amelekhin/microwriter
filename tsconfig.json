@@ -10,11 +10,7 @@
     "strictPropertyInitialization": false,
     "moduleResolution": "node",
     "sourceMap": true,
-    "module": "esnext",
-    "baseUrl": "./src",
-    "paths": {
-      "~/*": ["./*"]
-    }
+    "module": "esnext"
   },
   "include": ["src/**/*"]
 }
