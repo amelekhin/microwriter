@@ -9,13 +9,13 @@ interface MicrowriterOptions {
   writeSpeed: number;
 
   /** A speed in milliseconds between deletion of already typed characters */
-  deleteSpeed: number;
+  deleteSpeed?: number;
 
   /** A delay between before typing the line */
-  writeLineDelay: number;
+  writeLineDelay?: number;
 
   /** A delay between before deleting the line */
-  deleteLineDelay: number;
+  deleteLineDelay?: number;
 }
 
 const DEFAULT_WRITE_SPEED = 200;
