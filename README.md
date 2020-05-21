@@ -4,18 +4,26 @@
 [npm-url]: https://npmjs.org/package/microwriter
 [bundlephobia-shield]: https://img.shields.io/bundlephobia/minzip/microwriter
 [bundlephobia-url]: https://img.shields.io/bundlephobia/minzip/microwriter
+[pikadev-url]: https://www.pika.dev/npm/microwriter
 
 A tiny library that simulates the typewriter animation for JavaScript and TypeScript
 
 ## Installation
 
-Use npm or yarn:
+- Use pre-compiled modules in the `dist/` directory.
+- Use [pika.dev][pikadev-url] to import the module without bundling:
+
+```javascript
+import Microwriter from 'https://cdn.pika.dev/microwriter@^0.5.0';
+
+const writer = new Microwriter({ ... });
+```
+
+- Use npm or yarn:
 
 ```
 $ npm install microwriter
 ```
-
-or use pre-compiled modules in the `dist/` directory.
 
 ## Example
 
@@ -31,20 +39,20 @@ const writer = new Microwriter({
   target,
 
   // The lines list.
-  // They are printend in infinite loop.
+  // They are printed in infinite loop.
   lines: ['Hello, world', 'This is Microwriter'],
 
   // The writing speed in milliseconds.
   writeSpeed: 150,
 
-  // The deletion speed milliseconds.
+  // The deletion speed in milliseconds.
   // If not provided, writeSpeed used instead.
   deleteSpeed: 50,
 
   // A delay in milliseconds before writing a new line.
   writeLineDelay: 400,
 
-  // A delay in milliseconds before deletion a written line.
+  // A delay in milliseconds before deleting a written line.
   deleteLineDelay: 1000,
 });
 
