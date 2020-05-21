@@ -39,8 +39,10 @@ const writer = microwriter({
   target,
 
   // The lines list.
-  // They are printed in infinite loop.
   lines: ['Hello, world', 'This is Microwriter'],
+
+  // Print in infinite loop.
+  loop: true,
 
   // The writing speed in milliseconds.
   writeSpeed: 150,

@@ -12,6 +12,9 @@ const writer = microwriter({
   // They are printend in infinite loop.
   lines: ['Hello, world', 'This is Microwriter'],
 
+  // Print in infinite loop.
+  loop: true,
+
   // The writing speed in milliseconds.
   writeSpeed: 150,
 
@@ -24,8 +27,6 @@ const writer = microwriter({
 
   // A delay in milliseconds before deletion a written line
   deleteLineDelay: 1000,
-
-  loop: true,
 });
 
 // Start writing
