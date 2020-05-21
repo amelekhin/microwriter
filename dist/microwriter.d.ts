@@ -13,6 +13,8 @@ interface MicrowriterOptions {
     deleteLineDelay?: number;
     /** Run in infinite loop */
     loop?: boolean;
+    /** Preserve line text instead of deletion */
+    preserve?: boolean;
 }
 interface MicrowriterInstance {
     /** Start timer */

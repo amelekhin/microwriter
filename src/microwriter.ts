@@ -19,6 +19,9 @@ interface MicrowriterOptions {
 
   /** Run in infinite loop */
   loop?: boolean;
+
+  /** Preserve line text instead of deletion */
+  preserve?: boolean;
 }
 
 interface MicrowriterInstance {
@@ -55,6 +58,9 @@ export default function microwriter(options: MicrowriterOptions): MicrowriterIns
 
   /** Run in infinite loop */
   const loop = options.loop;
+
+  /** Preserve line text instead of deletion */
+  const preserve = options.preserve;
 
   /** Is microwriter writing new characters */
   let isPaused = false;
@@ -126,7 +132,7 @@ export default function microwriter(options: MicrowriterOptions): MicrowriterIns
 
     if (charsWrittenCount < currentLineLen && !isDeleting) {
       charsWrittenCount += 1;
-    } else if (charsWrittenCount > 0 && isDeleting) {
+    } else if (charsWrittenCount > 0 && isDeleting && !preserve) {
       charsWrittenCount -= 1;
     }
 
@@ -137,6 +143,19 @@ export default function microwriter(options: MicrowriterOptions): MicrowriterIns
       isDeleting = false;
       onLineEnd();
     } else if (charsWrittenCount === currentLine.length && !isDeleting) {
+      if (preserve && !loop) {
+        setTimeout(() => {
+          onLineEnd();
+
+          if (!isPaused) {
+            charsWrittenCount = 0;
+            startTimer();
+          }
+        }, deleteLineDelay);
+
+        return;
+      }
+
       isDeleting = true;
     }
 
@@ -150,6 +169,7 @@ export default function microwriter(options: MicrowriterOptions): MicrowriterIns
    */
   function onLineEnd(): void {
     if (lineIndex === lines.length - 1 && !loop) {
+      isPaused = true;
       stopTimer();
       return;
     }

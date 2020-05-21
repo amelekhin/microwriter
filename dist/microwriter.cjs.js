@@ -16,6 +16,8 @@ function microwriter(options) {
     const deleteLineDelay = options.deleteLineDelay || 0;
     /** Run in infinite loop */
     const loop = options.loop;
+    /** Preserve line text instead of deletion */
+    const preserve = options.preserve;
     /** Is microwriter writing new characters */
     let isPaused = false;
     /** Is microwriter deleting already typed characters */
@@ -75,7 +77,7 @@ function microwriter(options) {
         if (charsWrittenCount < currentLineLen && !isDeleting) {
             charsWrittenCount += 1;
         }
-        else if (charsWrittenCount > 0 && isDeleting) {
+        else if (charsWrittenCount > 0 && isDeleting && !preserve) {
             charsWrittenCount -= 1;
         }
         const nextInnerHtml = currentLine.substr(0, charsWrittenCount);
@@ -85,6 +87,16 @@ function microwriter(options) {
             onLineEnd();
         }
         else if (charsWrittenCount === currentLine.length && !isDeleting) {
+            if (preserve && !loop) {
+                setTimeout(() => {
+                    onLineEnd();
+                    if (!isPaused) {
+                        charsWrittenCount = 0;
+                        startTimer();
+                    }
+                }, deleteLineDelay);
+                return;
+            }
             isDeleting = true;
         }
         if (!isPaused) {
@@ -96,6 +108,7 @@ function microwriter(options) {
      */
     function onLineEnd() {
         if (lineIndex === lines.length - 1 && !loop) {
+            isPaused = true;
             stopTimer();
             return;
         }
