@@ -24,6 +24,8 @@ const writer = microwriter({
 
   // A delay in milliseconds before deletion a written line
   deleteLineDelay: 1000,
+
+  loop: true,
 });
 
 // Start writing
@@ -33,4 +35,4 @@ writer.start();
 // writer.pause();
 
 // Replace lines and restart
-writer.replaceLines(['My next list', 'of lines.']);
+// writer.replaceLines(['My next list', 'of lines.']);

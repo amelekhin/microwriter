@@ -8,7 +8,7 @@ import dts from 'rollup-plugin-dts';
 export default [
   // Browser-friendly UMD build
   {
-    input: 'src/index.ts',
+    input: 'src/microwriter.ts',
 
     output: {
       name: 'microwriter',
@@ -22,7 +22,7 @@ export default [
 
   // Minified browser-friendly UMD build
   {
-    input: 'src/index.ts',
+    input: 'src/microwriter.ts',
 
     output: {
       name: 'microwriter',
@@ -41,7 +41,7 @@ export default [
   // an array for the `output` option, where we can specify
   // `file` and `format` for each target)
   {
-    input: 'src/index.ts',
+    input: 'src/microwriter.ts',
 
     output: [
       { file: pkg.main, format: 'cjs', sourcemap: true },
@@ -53,7 +53,7 @@ export default [
 
   // TypeScript declaration file
   {
-    input: 'src/index.ts',
+    input: 'src/microwriter.ts',
 
     output: {
       name: 'microwriter',

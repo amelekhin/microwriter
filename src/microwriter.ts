@@ -18,6 +18,9 @@ interface MicrowriterOptions {
 
   /** A delay between before deleting the line */
   deleteLineDelay?: number;
+
+  /** Run in infinite loop */
+  loop?: boolean;
 }
 
 interface MicrowriterInstance {
@@ -47,6 +50,9 @@ export default function microwriter(options: MicrowriterOptions): MicrowriterIns
   /** A delay between before deleting the line */
   const deleteLineDelay = options.deleteLineDelay || 0;
 
+  /** Run in infinite loop */
+  const loop = options.loop;
+
   /** Is microwriter writing new characters */
   let isPaused = false;
 
@@ -56,8 +62,8 @@ export default function microwriter(options: MicrowriterOptions): MicrowriterIns
   /** The length of a currently written line */
   let charsWrittenCount = 0;
 
-  /** The length of a currently written line */
-  let lineLength = 0;
+  /** The index of a currently written line */
+  let lineIndex = 0;
 
   /** Current timer ID */
   let timerId = -1;
@@ -73,18 +79,28 @@ export default function microwriter(options: MicrowriterOptions): MicrowriterIns
     timerId = -1;
   }
 
-  function switchToNextLine(): void {
-    if (lineLength === lines.length - 1) {
-      lineLength = 0;
+  function onLineEnd(): void {
+    if (lineIndex === lines.length - 1 && !loop) {
+      stopTimer();
       return;
     }
 
-    lineLength++;
+    switchToNextLine();
+  }
+
+  function switchToNextLine(): void {
+    if (lineIndex === lines.length - 1) {
+      lineIndex = 0;
+      return;
+    }
+
+    lineIndex++;
   }
 
   function replaceLines(nextLines: string[]): void {
     lines = nextLines;
     reset();
+    startTimer();
   }
 
   function tick(): void {
@@ -92,7 +108,7 @@ export default function microwriter(options: MicrowriterOptions): MicrowriterIns
       return;
     }
 
-    const currentLine = lines[lineLength];
+    const currentLine = lines[lineIndex];
     const currentLineLen = currentLine.length;
 
     if (charsWrittenCount < currentLineLen && !isDeleting) {
@@ -105,7 +121,7 @@ export default function microwriter(options: MicrowriterOptions): MicrowriterIns
 
     if (charsWrittenCount === 0 && isDeleting) {
       isDeleting = false;
-      switchToNextLine();
+      onLineEnd();
     } else if (charsWrittenCount === currentLine.length && !isDeleting) {
       isDeleting = true;
     }
@@ -121,14 +137,12 @@ export default function microwriter(options: MicrowriterOptions): MicrowriterIns
     stopTimer();
 
     isDeleting = false;
-    lineLength = 0;
+    lineIndex = 0;
     charsWrittenCount = 0;
-
-    startTimer();
   }
 
   function getDelay(): number {
-    const currentLine = lines[lineLength];
+    const currentLine = lines[lineIndex];
 
     // If writing a line is about to begin
     if (charsWrittenCount === 0) {

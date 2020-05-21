@@ -15,14 +15,16 @@ function microwriter(options) {
     const writeLineDelay = options.writeLineDelay || 0;
     /** A delay between before deleting the line */
     const deleteLineDelay = options.deleteLineDelay || 0;
+    /** Run in infinite loop */
+    const loop = options.loop;
     /** Is microwriter writing new characters */
     let isPaused = false;
     /** Is microwriter deleting already typed characters */
     let isDeleting = false;
     /** The length of a currently written line */
     let charsWrittenCount = 0;
-    /** The length of a currently written line */
-    let lineLength = 0;
+    /** The index of a currently written line */
+    let lineIndex = 0;
     /** Current timer ID */
     let timerId = -1;
     function startTimer() {
@@ -34,22 +36,30 @@ function microwriter(options) {
         isPaused = true;
         timerId = -1;
     }
-    function switchToNextLine() {
-        if (lineLength === lines.length - 1) {
-            lineLength = 0;
+    function onLineEnd() {
+        if (lineIndex === lines.length - 1 && !loop) {
+            stopTimer();
             return;
         }
-        lineLength++;
+        switchToNextLine();
+    }
+    function switchToNextLine() {
+        if (lineIndex === lines.length - 1) {
+            lineIndex = 0;
+            return;
+        }
+        lineIndex++;
     }
     function replaceLines(nextLines) {
         lines = nextLines;
         reset();
+        startTimer();
     }
     function tick() {
         if (isPaused) {
             return;
         }
-        const currentLine = lines[lineLength];
+        const currentLine = lines[lineIndex];
         const currentLineLen = currentLine.length;
         if (charsWrittenCount < currentLineLen && !isDeleting) {
             charsWrittenCount += 1;
@@ -60,7 +70,7 @@ function microwriter(options) {
         const nextInnerHtml = currentLine.substr(0, charsWrittenCount);
         if (charsWrittenCount === 0 && isDeleting) {
             isDeleting = false;
-            switchToNextLine();
+            onLineEnd();
         }
         else if (charsWrittenCount === currentLine.length && !isDeleting) {
             isDeleting = true;
@@ -73,12 +83,11 @@ function microwriter(options) {
     function reset() {
         stopTimer();
         isDeleting = false;
-        lineLength = 0;
+        lineIndex = 0;
         charsWrittenCount = 0;
-        startTimer();
     }
     function getDelay() {
-        const currentLine = lines[lineLength];
+        const currentLine = lines[lineIndex];
         // If writing a line is about to begin
         if (charsWrittenCount === 0) {
             return writeLineDelay || writeSpeed;

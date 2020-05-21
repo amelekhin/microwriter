@@ -11,6 +11,8 @@ interface MicrowriterOptions {
     writeLineDelay?: number;
     /** A delay between before deleting the line */
     deleteLineDelay?: number;
+    /** Run in infinite loop */
+    loop?: boolean;
 }
 interface MicrowriterInstance {
     start(): void;
