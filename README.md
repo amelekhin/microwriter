@@ -1,10 +1,25 @@
-# Microwriter
+# Microwriter [![npm][npm-shield]][npm-url] [![bundlephobia][bundlephobia-shield]][bundlephobia-url]
 
-A tiny JavaScript / TypeScript library which simulates the typewriter animation.
+[npm-shield]: https://img.shields.io/npm/v/microwriter.svg?style=flat
+[npm-url]: https://npmjs.org/package/microwriter
+[bundlephobia-shield]: https://img.shields.io/bundlephobia/minzip/microwriter
+[bundlephobia-url]: https://img.shields.io/bundlephobia/minzip/microwriter
+
+A tiny library that simulates the typewriter animation for JavaScript and TypeScript
+
+## Installation
+
+Use npm or yarn:
+
+```
+$ npm install microwriter
+```
+
+or use pre-compiled modules in the `dist/` directory.
 
 ## Example
 
-A working example can be found in the example directory. The usage is very straightforward:
+A working example can be found in the `example/` directory. The usage is very straightforward:
 
 ```javascript
 // Find a target element to write text into.
