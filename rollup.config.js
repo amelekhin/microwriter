@@ -2,6 +2,7 @@ import pkg from './package.json';
 import rollupTypescript from '@rollup/plugin-typescript';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import { terser } from 'rollup-plugin-terser';
 import dts from 'rollup-plugin-dts';
 
 export default [
@@ -17,6 +18,20 @@ export default [
     },
 
     plugins: [rollupTypescript(), resolve(), commonjs()],
+  },
+
+  // Minified browser-friendly UMD build
+  {
+    input: 'src/index.ts',
+
+    output: {
+      name: 'microwriter',
+      file: pkg.browserMin,
+      format: 'umd',
+      sourcemap: true,
+    },
+
+    plugins: [rollupTypescript(), resolve(), commonjs(), terser()],
   },
 
   // CommonJS (for Node) and ES module (for bundlers) build.
