@@ -1,4 +1,4 @@
-interface MicrowriterOptions {
+export interface MicrowriterOptions {
   /** An HTML element to write into */
   target: HTMLElement;
 
@@ -24,7 +24,7 @@ interface MicrowriterOptions {
   preserve?: boolean;
 }
 
-interface MicrowriterInstance {
+export interface MicrowriterInstance {
   /** Start timer */
   start(): void;
 
