@@ -4,160 +4,168 @@
     (global = global || self, global.microwriter = factory());
 }(this, (function () { 'use strict';
 
-    const DEFAULT_WRITE_SPEED = 200;
-    function microwriter(options) {
-        /** An HTML element to write into */
-        const target = options.target;
-        /** An array of strings to type */
-        let lines = options.lines;
-        /** A delay in milliseconds between typing new characters */
-        const writeSpeed = options.writeSpeed || DEFAULT_WRITE_SPEED;
-        /** A delay in milliseconds between deletion of already typed characters */
-        const deleteSpeed = options.deleteSpeed || writeSpeed;
-        /** A delay between before typing the line */
-        const writeLineDelay = options.writeLineDelay || 0;
-        /** A delay between before deleting the line */
-        const deleteLineDelay = options.deleteLineDelay || 0;
-        /** Run in infinite loop */
-        const loop = options.loop;
-        /** Preserve line text instead of deletion */
-        const preserve = options.preserve;
-        /** Is microwriter writing new characters */
-        let isPaused = false;
-        /** Is microwriter deleting already typed characters */
-        let isDeleting = false;
-        /** The length of a currently written line */
-        let charsWrittenCount = 0;
-        /** The index of a currently written line */
-        let lineIndex = 0;
-        /** Current timer ID */
-        let timerId = -1;
-        /**
-         * Start timer.
-         * Exposed as instance method.
-         */
-        function startTimer() {
-            isPaused = false;
-            timerId = window.setTimeout(tick, getDelay());
+    const DEFAULT_WRITE_SPEED_MS = 200;
+    class Microwriter {
+        constructor(options) {
+            /** Is microwriter writing new characters */
+            this.isPaused = true;
+            /** Is microwriter deleting already typed characters */
+            this.isDeleting = false;
+            /** The length of a currently written line */
+            this.charsWritten = 0;
+            /** The index of a currently written line */
+            this.lineIndex = 0;
+            /** Current timer ID */
+            this.timerId = null;
+            const isValidTarget = options.target instanceof HTMLElement;
+            if (!isValidTarget) {
+                throw new Error('Microwriter: options.target is not an HTMLElement');
+            }
+            const isValidLines = Array.isArray(options.lines);
+            if (!isValidLines) {
+                throw new Error('Microwriter: options.lines is not an array');
+            }
+            // Copy options to prevent unexpected behavior by mutating the options object
+            this.target = options.target;
+            // Map lines' elements to strings for safety
+            this.lines = options.lines.map(String);
+            // Use default write speed if writeSpeed is not provided
+            this.writeSpeed = options.writeSpeed || DEFAULT_WRITE_SPEED_MS;
+            // Use this.writeSpeed if deleteSpeed is not provided
+            this.deleteSpeed = options.deleteSpeed || this.writeSpeed;
+            // Completely optional params so we set them to 0 by default
+            this.writeLineDelay = options.writeLineDelay || 0;
+            this.deleteLineDelay = options.deleteLineDelay || 0;
+            // Loop is disabled by default
+            // Lines are written and removed one by one without repetition
+            this.loop = options.loop || false;
+            // If preserve is true, then line is removed instantly
+            // before writing a new one instead of one-by-one character removal.
+            // If combined with loop = false, then last line is not removed at all.
+            // TODO: Revisit this behavior.
+            this.preserve = options.preserve;
+            this.tick = this.tick.bind(this);
         }
-        /**
-         * Stop timer.
-         * Exposed as instance method.
-         */
-        function stopTimer() {
-            window.clearTimeout(timerId);
-            isPaused = true;
-            timerId = -1;
+        /** Start typing timer */
+        start() {
+            this.isPaused = false;
+            this.timerId = window.setTimeout(this.tick, this.delay);
+        }
+        /** Pause typing timer */
+        pause() {
+            if (!this.timerId) {
+                return;
+            }
+            window.clearTimeout(this.timerId);
+            this.isPaused = true;
+            this.timerId = null;
         }
         /**
          * Replace lines and restart timer.
-         * Exposed as instance method.
          *
-         * @param nextLines - a new list of lines to write
+         * @param lines - a next list of lines
          */
-        function replaceLines(nextLines) {
-            lines = nextLines;
-            reset();
-            startTimer();
+        replaceLines(lines) {
+            this.pause();
+            this.resetState();
+            this.lines = lines.map(String);
+            this.start();
         }
-        /**
-         * Stop timer and reset state to initial.
-         */
-        function reset() {
-            stopTimer();
-            isDeleting = false;
-            lineIndex = 0;
-            charsWrittenCount = 0;
+        /** Pause timer and reset current state  */
+        resetState() {
+            this.pause();
+            this.isDeleting = false;
+            this.lineIndex = 0;
+            this.charsWritten = 0;
         }
-        /**
-         * Perform writing or deleting a character.
-         */
-        function tick() {
-            if (isPaused) {
-                return;
-            }
-            const currentLine = lines[lineIndex];
-            const currentLineLen = currentLine.length;
-            if (charsWrittenCount < currentLineLen && !isDeleting) {
-                charsWrittenCount += 1;
-            }
-            else if (charsWrittenCount > 0 && isDeleting && !preserve) {
-                charsWrittenCount -= 1;
-            }
-            const nextInnerHtml = currentLine.substr(0, charsWrittenCount);
-            target.innerHTML = nextInnerHtml;
-            if (charsWrittenCount === 0 && isDeleting) {
-                isDeleting = false;
-                onLineEnd();
-            }
-            else if (charsWrittenCount === currentLine.length && !isDeleting) {
-                if (preserve && !loop) {
-                    setTimeout(() => {
-                        onLineEnd();
-                        if (!isPaused) {
-                            charsWrittenCount = 0;
-                            startTimer();
-                        }
-                    }, deleteLineDelay);
-                    return;
-                }
-                isDeleting = true;
-            }
-            if (!isPaused) {
-                startTimer();
-            }
+        /** Get current line value */
+        get currentLine() {
+            return this.lines[this.lineIndex];
         }
-        /**
-         * Check if line should be switched or timer should be stopped
-         */
-        function onLineEnd() {
-            if (lineIndex === lines.length - 1 && !loop) {
-                isPaused = true;
-                stopTimer();
-                return;
-            }
-            switchToNextLine();
-        }
-        /**
-         * Switch to the next line in the lines list.
-         * If the current line is the last one, jump to the first.
-         */
-        function switchToNextLine() {
-            if (lineIndex === lines.length - 1) {
-                lineIndex = 0;
-                return;
-            }
-            lineIndex++;
-        }
-        /**
-         * Get delay for timer depending on the current state.
-         */
-        function getDelay() {
-            const currentLine = lines[lineIndex];
+        /** Get delay for next tick */
+        get delay() {
             // If writing a line is about to begin
-            if (charsWrittenCount === 0) {
-                return writeLineDelay || writeSpeed;
+            if (this.charsWritten === 0) {
+                return this.writeLineDelay || this.writeSpeed;
             }
             // If deleting a line is about to begin
-            if (charsWrittenCount === currentLine.length) {
-                return deleteLineDelay || deleteSpeed;
+            if (this.charsWritten === this.currentLine.length) {
+                if (this.preserve) {
+                    return this.deleteLineDelay;
+                }
+                return this.deleteLineDelay || this.deleteSpeed;
             }
             // If in the middle of deleting a line
-            if (isDeleting) {
-                return deleteSpeed;
+            if (this.isDeleting) {
+                return this.deleteSpeed;
             }
             // If in the middle of writing a line
-            return writeSpeed;
+            return this.writeSpeed;
         }
-        // Return a microwriter instance
-        return {
-            start: startTimer,
-            pause: stopTimer,
-            replaceLines: replaceLines,
-        };
+        /** Set direction (writing or deletion) for next tick */
+        updateDirection() {
+            const isLineBeginning = this.charsWritten === 0;
+            const isLineEnd = this.charsWritten === this.currentLine.length;
+            if (this.preserve || (isLineBeginning && this.isDeleting)) {
+                this.isDeleting = false;
+            }
+            else if (isLineEnd && !this.isDeleting) {
+                this.isDeleting = true;
+            }
+        }
+        /** Calculate next charsWritten value before writing new content */
+        updateCharsWritten() {
+            const isLineBeginning = this.charsWritten === 0;
+            const isLineEnd = this.charsWritten === this.currentLine.length;
+            if (!isLineEnd && !this.isDeleting) {
+                this.charsWritten += 1;
+            }
+            else if (!isLineBeginning && this.isDeleting && !this.preserve) {
+                this.charsWritten -= 1;
+            }
+        }
+        /** Update string in target element */
+        updateText() {
+            const nextInnerHtml = this.currentLine.substr(0, this.charsWritten);
+            this.target.innerHTML = nextInnerHtml;
+        }
+        /** Switch to next line if necessary */
+        setNextLine() {
+            const isLineBeginning = this.charsWritten === 0;
+            const isLineEnd = this.charsWritten === this.currentLine.length;
+            const isLastLine = this.lineIndex === this.lines.length - 1;
+            // If in the middle of the line, keep it
+            if (!isLineBeginning && !isLineEnd) {
+                return;
+            }
+            if (isLastLine) {
+                if (!this.loop) {
+                    this.pause();
+                    return;
+                }
+                if (isLineBeginning || this.preserve) {
+                    this.lineIndex = 0;
+                    return;
+                }
+            }
+            if (isLineBeginning) {
+                this.lineIndex += 1;
+            }
+        }
+        /** Perform a typing iteration */
+        tick() {
+            if (this.isPaused) {
+                return;
+            }
+            this.updateCharsWritten();
+            this.updateText();
+            this.updateDirection();
+            this.setNextLine();
+            this.start();
+        }
     }
 
-    return microwriter;
+    return Microwriter;
 
 })));
 //# sourceMappingURL=microwriter.js.map

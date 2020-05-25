@@ -1,10 +1,10 @@
-import microwriter from '../../dist/microwriter';
+import Microwriter from '../../dist/microwriter';
 
 // Find a target element to write text into
 const target = document.getElementById('microwriter-target');
 
 // Initialize a writer
-const writer = microwriter({
+const writer = new Microwriter({
   // The target
   target,
 
@@ -25,7 +25,7 @@ const writer = microwriter({
   // A delay in milliseconds before writing a new line
   writeLineDelay: 400,
 
-  // A delay in milliseconds before deletion a written line
+  // A delay in milliseconds before deleting a written line
   deleteLineDelay: 1000,
 });
 
