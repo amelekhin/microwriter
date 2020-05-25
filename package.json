@@ -3,6 +3,10 @@
   "version": "0.7.1",
   "description": "A tiny typewriter library for JavaScript and TypeScript",
   "author": "Anton Amelekhin <a.amelekhin@outlook.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amelekhin/microwriter"
+  },
   "keywords": [
     "typewriter",
     "printer",
