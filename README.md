@@ -34,7 +34,7 @@ A working example can be found in the `example/` directory. The usage is very st
 const target = document.getElementById('microwriter-target');
 
 // Initialize a writer
-const writer = microwriter({
+const writer = new Microwriter({
   // The target
   target,
 
