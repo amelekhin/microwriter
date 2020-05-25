@@ -2,7 +2,7 @@
 
 [npm-shield]: https://img.shields.io/npm/v/microwriter.svg?style=flat&color=00ba5d
 [npm-url]: https://npmjs.org/package/microwriter
-[bundlephobia-shield]: https://img.shields.io/bundlephobia/minzip/microwriter?style=flat&color=44b1c7
+[bundlephobia-shield]: https://img.shields.io/bundlephobia/minzip/microwriter?style=flat&color=50a5d4
 [bundlephobia-url]: https://bundlephobia.com/result?p=microwriter
 [pikadev-url]: https://www.pika.dev/npm/microwriter
 
