@@ -27,3 +27,4 @@ interface MicrowriterInstance {
 declare function microwriter(options: MicrowriterOptions): MicrowriterInstance;
 
 export default microwriter;
+export { MicrowriterInstance, MicrowriterOptions };
