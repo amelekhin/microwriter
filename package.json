@@ -1,7 +1,13 @@
 {
   "name": "microwriter",
   "version": "0.6.2",
-  "description": "A typewriter library for JavaScript and TypeScript",
+  "description": "A tiny typewriter library for JavaScript and TypeScript",
+  "author": "Anton Amelekhin <a.amelekhin@outlook.com>",
+  "keywords": [
+    "typewriter",
+    "printer",
+    "typing"
+  ],
   "license": "MIT",
   "main": "dist/microwriter.cjs.js",
   "module": "dist/microwriter.esm.js",
