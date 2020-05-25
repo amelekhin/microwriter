@@ -1,6 +1,6 @@
 {
   "name": "microwriter",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "A tiny typewriter library for JavaScript and TypeScript",
   "author": "Anton Amelekhin <a.amelekhin@outlook.com>",
   "keywords": [
