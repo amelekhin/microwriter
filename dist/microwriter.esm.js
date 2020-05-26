@@ -159,5 +159,12 @@ class Microwriter {
     }
 }
 
-export default Microwriter;
+// This wrapper function is added to make it possible move to function-based implementation in future
+// without breaking the library interface and to make it compatible with 0.6 branch.
+function microwriter(options) {
+    return new Microwriter(options);
+}
+
+export default microwriter;
+export { Microwriter };
 //# sourceMappingURL=microwriter.esm.js.map

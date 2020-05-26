@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 const DEFAULT_WRITE_SPEED_MS = 200;
 class Microwriter {
     constructor(options) {
@@ -161,5 +163,12 @@ class Microwriter {
     }
 }
 
-module.exports = Microwriter;
+// This wrapper function is added to make it possible move to function-based implementation in future
+// without breaking the library interface and to make it compatible with 0.6 branch.
+function microwriter(options) {
+    return new Microwriter(options);
+}
+
+exports.Microwriter = Microwriter;
+exports.default = microwriter;
 //# sourceMappingURL=microwriter.cjs.js.map

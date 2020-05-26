@@ -80,5 +80,7 @@ declare class Microwriter implements MicrowriterInstance {
     private tick;
 }
 
-export default Microwriter;
-export { MicrowriterInstance, MicrowriterOptions };
+declare function microwriter(options: MicrowriterOptions): MicrowriterInstance;
+
+export default microwriter;
+export { Microwriter, MicrowriterInstance, MicrowriterOptions };

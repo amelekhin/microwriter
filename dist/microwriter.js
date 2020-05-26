@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global = global || self, global.microwriter = factory());
-}(this, (function () { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+    typeof define === 'function' && define.amd ? define(['exports'], factory) :
+    (global = global || self, factory(global.microwriter = {}));
+}(this, (function (exports) { 'use strict';
 
     const DEFAULT_WRITE_SPEED_MS = 200;
     class Microwriter {
@@ -165,7 +165,16 @@
         }
     }
 
-    return Microwriter;
+    // This wrapper function is added to make it possible move to function-based implementation in future
+    // without breaking the library interface and to make it compatible with 0.6 branch.
+    function microwriter(options) {
+        return new Microwriter(options);
+    }
+
+    exports.Microwriter = Microwriter;
+    exports.default = microwriter;
+
+    Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
 //# sourceMappingURL=microwriter.js.map
