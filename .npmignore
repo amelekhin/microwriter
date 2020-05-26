@@ -3,4 +3,4 @@
 .prettierrc
 tsconfig.json
 rollup.config.js
-examples/
+example/
