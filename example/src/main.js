@@ -1,25 +1,29 @@
-import Microwriter from '../../dist/microwriter';
+import microwriter from '../../dist/microwriter';
 
 // Find a target element to write text into
 const target = document.getElementById('microwriter-target');
 
 // Initialize a writer
-const writer = new Microwriter({
+const writer = microwriter({
   // The target
   target,
 
-  // The lines list.
-  // They are printend in infinite loop.
+  // The lines list
   lines: ['Hello, world', 'This is Microwriter'],
 
-  // Print in infinite loop.
+  // Print in infinite loop
+  // Default is false
   loop: true,
 
-  // The writing speed in milliseconds.
+  // Delete whole line at a time before writing next or preserve the line if there's only one in the list
+  // Default is false
+  preserve: false,
+
+  // The writing speed in milliseconds
   writeSpeed: 150,
 
-  // The deletion speed milliseconds.
-  // If not provided, writeSpeed used instead.
+  // The deletion speed in milliseconds
+  // If not provided, writeSpeed is used instead
   deleteSpeed: 50,
 
   // A delay in milliseconds before writing a new line

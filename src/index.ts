@@ -1,5 +1,9 @@
 import Microwriter, { MicrowriterOptions, MicrowriterInstance } from './Microwriter';
 
-export { MicrowriterOptions, MicrowriterInstance };
+export { Microwriter, MicrowriterOptions, MicrowriterInstance };
 
-export default Microwriter;
+// This wrapper function is added to make it possible move to function-based implementation in future
+// without breaking the library interface and to make it compatible with 0.6 branch.
+export default function microwriter(options: MicrowriterOptions): MicrowriterInstance {
+  return new Microwriter(options);
+}
